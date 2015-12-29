@@ -124,15 +124,22 @@ export default Ember.Component.extend({
         });
 
       } else if (this._isShown) {
-        this.$('.modal').one('hidden.bs.modal', () => {
+        if ($('.modal').data('bs.modal').isShown) {
+          this.$('.modal').one('hidden.bs.modal', () => {
+            this._isShown = false;
+            this.get('transitions').decrementRunningTransitions();
+            Ember.run(() => {
+              this.set('deferredContext', null);
+            });
+          });
+          this.get('transitions').incrementRunningTransitions();
+          this.$('.modal').modal('hide');
+        } else {
           this._isShown = false;
-          this.get('transitions').decrementRunningTransitions();
           Ember.run(() => {
             this.set('deferredContext', null);
           });
-        });
-        this.get('transitions').incrementRunningTransitions();
-        this.$('.modal').modal('hide');
+        }
       }
     }
   }),
