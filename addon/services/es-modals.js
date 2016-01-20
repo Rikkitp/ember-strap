@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-const { on, get, computed, observer, inject } = Ember;
+const { on, get, computed, observer, inject, getOwner } = Ember;
 
 /**
 * Maintain context of modals.
@@ -17,7 +17,7 @@ export default Ember.Service.extend({
     this.set('modalContexts', Ember.A());
     this.set('modals', Ember.A());
 
-    var modalConfigs = this.container.lookup('router:main').router.esModals;
+    var modalConfigs = getOwner(this).lookup('router:main').router.esModals;
     if (modalConfigs && modalConfigs.length > 0) {
       var self = this;
       modalConfigs.forEach(function(m){ self.registerModal(m); });
@@ -27,7 +27,7 @@ export default Ember.Service.extend({
   registerModal: function(config) {
     var ext = {
       modals: this,
-      container: this.container
+      container: getOwner(this)
     };
 
     for (var param in config.options.withParams) {
@@ -44,7 +44,7 @@ export default Ember.Service.extend({
     // for invalidation, even though we aren't use it directly.
     this.get('routing.currentRouteName');
 
-    var infos = this.container.lookup('router:main').router.currentHandlerInfos;
+    var infos = getOwner(this).lookup('router:main').router.currentHandlerInfos;
     if (infos) {
       return infos.map(function(h){  return h.name;  });
     } else {
