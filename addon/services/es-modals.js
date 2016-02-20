@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import getOwner from 'ember-getowner-polyfill';
 
-const { on, get, computed, observer, inject, getOwner } = Ember;
+const { on, get, computed, observer, inject } = Ember;
 
 /**
 * Maintain context of modals.
