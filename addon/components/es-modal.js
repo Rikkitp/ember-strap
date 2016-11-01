@@ -1,8 +1,7 @@
 import Ember from 'ember';
 import layout from '../templates/components/es-modal';
-import getOwner from 'ember-getowner-polyfill';
 
-const { computed, observer, on, copy, assert, inject } = Ember;
+const { computed, observer, on, copy, assert, inject, getOwner } = Ember;
 
 /**
 * Implements Bootstrap modals, see http://getbootstrap.com/javascript/#modals
@@ -157,7 +156,7 @@ export default Ember.Component.extend({
 
     let name = current.get('name'),
         owner = getOwner(this),
-        component = owner.lookup('component-lookup:main').lookupFactory(name);
+        component = owner.lookup('component-lookup:main').get('container')._fakeContainerToInject.lookupFactory('component:'+name);
     assert("Tried to render a modal using component '" + name + "', but couldn't find it.", !!component);
 
     let args = copy(current.get('params'));
@@ -191,7 +190,7 @@ export default Ember.Component.extend({
       controller.send.apply(controller, args);
     };
 
-    return component.extend(args);
+    return name;
   }),
 
   /**
